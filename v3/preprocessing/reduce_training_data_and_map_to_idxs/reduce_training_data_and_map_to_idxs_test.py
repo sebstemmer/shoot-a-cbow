@@ -1,4 +1,4 @@
-from .reduce_training_data_and_map_to_idx import reduce_training_data_and_map_to_idx
+from .reduce_training_data_and_map_to_idxs import reduce_training_data_and_map_to_idxs
 
 
 def runTest():
@@ -18,7 +18,7 @@ def runTest():
         "preprocessed": (3, 4)
     }
 
-    output: list[tuple[int, list[int]]] = reduce_training_data_and_map_to_idx(
+    output: list[tuple[int, list[int]]] = reduce_training_data_and_map_to_idxs(
         full_training_data_in_words=training_data_in_words,
         word_to_idx_count_vocab=word_to_idx_count_vocab,
     )

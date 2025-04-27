@@ -1,4 +1,6 @@
-import v3.utils.utils as utils
+from v3.preprocessing.path_to_data_folder_const import path_to_data_folder
+from v3.preprocessing.vocab_class import Vocab
+from v3.preprocessing.preprocessed_data_class import PreprocessedData
 import v3.preprocessing.preprocessing_utils as preprocessing_utils
 import matplotlib.pyplot as plt
 import pickle
@@ -11,17 +13,20 @@ import copy
 subsampling_t = 1e-4
 subsampling_pow = 1
 
-with open(utils.path_to_data + "preprocessing/preprocessed_data.pickle", "rb") as handle:
-    preprocessed_data: preprocessing_utils.PreprocessedData = pickle.load(
+with open(path_to_data_folder + "preprocessing/preprocessed_data.pickle", "rb") as handle:
+    preprocessed_data: PreprocessedData = pickle.load(
         handle
     )
 
-with open(utils.path_to_data + "preprocessing/vocab.pickle", "rb") as handle:
-    vocab: preprocessing_utils.Vocab = pickle.load(handle)
+with open(path_to_data_folder + "preprocessing/vocab.pickle", "rb") as handle:
+    vocab: Vocab = pickle.load(handle)
 
 # idx, count
-sorted_values: list[tuple[int, int]] = sorted(vocab.word_to_idx_count_vocab.values(),
-                                              key=lambda x: x[1], reverse=True)
+sorted_values: list[tuple[int, int]] = sorted(
+    vocab.word_to_idx_count_vocab.values(),
+    key=lambda x: x[1],
+    reverse=True
+)
 
 count = [math.log(v[1]) for v in sorted_values]
 

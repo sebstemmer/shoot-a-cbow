@@ -1,4 +1,4 @@
-import v3.preprocessing.logic.create_bag_of_words.create_bag_of_words as create_bag_of_words
+import v3.preprocessing.create_bag_of_words.create_bag_of_words as create_bag_of_words
 
 
 def create_training_data_in_words_for_sentence(
