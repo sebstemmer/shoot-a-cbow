@@ -1,4 +1,4 @@
-import v2.data_processing.data_processing_utils as utils
+import v2.data_processing.data_processing_utils as data_processing_utils
 
 # todo for sebstemmer: überall typen + richtige benennung
 
@@ -6,7 +6,7 @@ import v2.data_processing.data_processing_utils as utils
 
 input = "Hello, I am a sentence. Why are you splitting me?\n\n Are you crazy! Why are you, doing this to me?"
 
-split_into_sentences_output = utils.split_into_sentences(
+split_into_sentences_output = data_processing_utils.split_into_sentences(
     input
 )
 
@@ -24,7 +24,7 @@ input = [
     "Why are you! splitting me.",
 ]
 
-remove_punctuation_output = utils.remove_punctuation(input)
+remove_punctuation_output = data_processing_utils.remove_punctuation(input)
 
 assert remove_punctuation_output == [
     "Hello I am a sentence1 12",
@@ -38,7 +38,7 @@ input = [
     "Why are you splitting me",
 ]
 
-output = utils.lower(input)
+output = data_processing_utils.lower(input)
 
 assert output == [
     "hello i am a sentence",
@@ -53,7 +53,7 @@ input = [
     "why are you splitting me",
 ]
 
-output = utils.split_into_words(input)
+output = data_processing_utils.split_into_words(input)
 
 assert output == [
     ["hello", "i", "am", "a", "sentence"],
@@ -68,7 +68,7 @@ input = [
     ["why", "are", "you", "splitting", "me", "into", "more", "sentence"]
 ]
 
-output = utils.count_words_and_create_indices(input)
+output = data_processing_utils.count_words_and_create_indices(input)
 
 assert output == {"me": (3, 0),
                   "sentence": (2, 1),
@@ -104,7 +104,7 @@ vocab = {"me": (3, 0),
          "more": (1, 10)
          }
 
-output = utils.replace_words_with_indices(
+output = data_processing_utils.replace_words_with_indices(
     sentences_in_words=input,
     word_index_dict=vocab,
     max_index=9
@@ -117,7 +117,7 @@ assert output == [[2, 0, 3, 4, 1, 0], [5, 6, 7, 8, 0, -1, -1, 1]]
 
 input = [3, 1, 4, 5, 2, 1, -1]
 
-output = utils.create_bag_of_words(
+output = data_processing_utils.create_bag_of_words(
     word_idx=1,
     sentence_in_idxs=input,
     context_window_size=2
@@ -125,7 +125,7 @@ output = utils.create_bag_of_words(
 
 assert output == [3, 4, 5]
 
-output = utils.create_bag_of_words(
+output = data_processing_utils.create_bag_of_words(
     word_idx=4,
     sentence_in_idxs=input,
     context_window_size=2
@@ -133,7 +133,7 @@ output = utils.create_bag_of_words(
 
 assert output == [4, 5, 1]
 
-output = utils.create_bag_of_words(
+output = data_processing_utils.create_bag_of_words(
     word_idx=3,
     sentence_in_idxs=input,
     context_window_size=3
@@ -146,7 +146,7 @@ assert output == [3, 1, 4, 2, 1]
 
 input = [3, 1, 4, -1, 2, 1]
 
-output = utils.create_training_data_for_sentence(
+output = data_processing_utils.create_training_data_for_sentence(
     sentence_in_idxs=input,
     context_window_size=2
 )
@@ -164,7 +164,7 @@ assert output == [
 
 input = [[3, 1, 4, -1, 2, 1], [6, 7, 8, 9, 1, -1, -1, 2]]
 
-output = utils.create_training_data(
+output = data_processing_utils.create_training_data(
     sentences_in_idxs=input,
     context_window_size=2
 )
@@ -181,3 +181,21 @@ assert output == [
     (9, [7, 8, 1]),
     (1, [8, 9])
 ]
+
+
+# calc_entropy
+
+calc_entropy_training_data = [
+    (2, [3, 3, 1, 1]),
+    (0, [1, 1, 2, 3]),
+    (3, [1, 2, 0, 1]),
+    (1, [1, 3, 0, 0]),
+    (0, [1, 1])
+]
+
+calc_entropy_output = data_processing_utils.calc_entropy(
+    training_data=calc_entropy_training_data,
+    vocab_size=4
+)
+
+calc_entropy_output

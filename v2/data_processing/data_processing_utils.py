@@ -1,6 +1,7 @@
 import re
 import collections
 import v2.utils.utils as utils
+import torch
 
 
 def split_into_sentences(text: str) -> list[str]:
@@ -83,3 +84,30 @@ def create_training_data(
             context_window_size=context_window_size
         ) for sentence_in_idxs in sentences_in_idxs
     ])
+
+
+def calc_entropy(
+    training_data: list[tuple[int, list[int]]],
+    vocab_size: int
+):
+    total_counts: torch.Tensor = torch.zeros(vocab_size)
+    n_log_n: torch.Tensor = torch.zeros(vocab_size)
+
+    for td_idx, training_sample in enumerate(training_data):
+        print(td_idx)
+
+        window: list[int] = [training_sample[0]] + training_sample[1]
+
+        counts: torch.Tensor = torch.bincount(
+            torch.tensor(window),
+            minlength=vocab_size
+        )
+
+        n_log_n += counts * torch.log((counts+1e-10))
+        total_counts += counts
+
+    return torch.where(
+        total_counts > 0,
+        (-1.0 / total_counts) * (n_log_n - torch.log(total_counts) * total_counts),
+        0.0
+    )

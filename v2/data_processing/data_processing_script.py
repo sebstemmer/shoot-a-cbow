@@ -4,7 +4,7 @@ import pickle
 from typing import Union
 
 n_most_frequent_words: int = 30000
-context_window_size: int = 6
+context_window_size: int = 4
 
 raw_text: str = open("./v2/data/raw/AllCombined.txt", "r").read()
 
@@ -34,6 +34,7 @@ training_data: list[tuple[int, list[int]]] = utils.create_training_data(
 random.shuffle(training_data)
 
 print("there are " + str(len(training_data)) + " training samples")
+
 
 processed_data: dict[str, Union[int, int, list[tuple[int, list[int]]]]] = {
     "vocab_size": n_most_frequent_words,

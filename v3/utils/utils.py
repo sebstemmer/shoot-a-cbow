@@ -2,6 +2,8 @@ from typing import TypeVar
 
 T = TypeVar('T')
 
+path_to_data: str = "./v3/data/"
+
 
 def flatten(listOfLists: list[list[T]]) -> list[T]:
     return [item for sublist in listOfLists for item in sublist]
