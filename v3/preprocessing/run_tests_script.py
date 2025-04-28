@@ -14,9 +14,10 @@ from .create_idx_to_word_vocab import create_idx_to_word_vocab_test
 from .add_window_count_to_word_to_idx_count_vocab import add_window_count_to_word_to_idx_count_vocab_test
 from .create_idx_to_word_vocab import create_idx_to_word_vocab_test
 from .subsample_idx import subsample_idx_test
-from .subsampling_training_data import subsampling_training_data_test
+from .subsample_training_data import subsample_training_data_test
 from .create_idx_to_vocab_freq import create_idx_to_vocab_freq_test
 from .flatten import flatten_test
+from .create_sorted_idx_to_log_count_vocab import create_sorted_idx_to_log_count_vocab_test
 
 
 split_into_sentences_test.runTest()
@@ -35,6 +36,7 @@ create_idx_to_word_vocab_test.runTest()
 add_window_count_to_word_to_idx_count_vocab_test.runTest()
 create_idx_to_word_vocab_test.runTest()
 subsample_idx_test.runTest()
-subsampling_training_data_test.runTest()
+subsample_training_data_test.runTest()
 create_idx_to_vocab_freq_test.runTest()
 flatten_test.runTest()
+create_sorted_idx_to_log_count_vocab_test.runTest()

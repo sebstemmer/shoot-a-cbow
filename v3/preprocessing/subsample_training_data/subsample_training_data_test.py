@@ -1,4 +1,4 @@
-from .subsampling_training_data import subsample_training_data
+from .subsample_training_data import subsample_training_data
 
 
 def runTest():

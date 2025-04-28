@@ -1,11 +1,6 @@
-from v3.preprocessing.path_to_data_folder_const import path_to_data_folder
-from v3.preprocessing.vocab_class import Vocab
-from v3.preprocessing.preprocessed_data_class import PreprocessedData
 import v3.preprocessing.preprocessing_utils as preprocessing_utils
 import matplotlib.pyplot as plt
 import pickle
-import math
-import v3.training.training_utils as training_utils
 import copy
 
 # 1e-4 0.9
@@ -13,66 +8,84 @@ import copy
 subsampling_t = 1e-4
 subsampling_pow = 1
 
-with open(path_to_data_folder + "preprocessing/preprocessed_data.pickle", "rb") as handle:
-    preprocessed_data: PreprocessedData = pickle.load(
+
+print("load preprocessed-data...")
+
+with open(preprocessing_utils.path_to_data_folder + "preprocessing/preprocessed_data.pickle", "rb") as handle:
+    preprocessed_data: preprocessing_utils.PreprocessedData = pickle.load(
         handle
     )
 
-with open(path_to_data_folder + "preprocessing/vocab.pickle", "rb") as handle:
-    vocab: Vocab = pickle.load(handle)
-
-# idx, count
-sorted_values: list[tuple[int, int]] = sorted(
-    vocab.word_to_idx_count_vocab.values(),
-    key=lambda x: x[1],
-    reverse=True
-)
-
-count = [math.log(v[1]) for v in sorted_values]
-
-print(sorted_values[1200])
+print("...preprocessed-data loaded")
 
 
-vocab_frequencies: dict[int, float] = training_utils.create_vocab_frequencies(
+print("load vocab...")
+
+with open(preprocessing_utils.path_to_data_folder + "preprocessing/vocab.pickle", "rb") as handle:
+    vocab: preprocessing_utils.Vocab = pickle.load(handle)
+
+print("...vocab loaded")
+
+
+print("create idx-and-log-count-sorted...")
+
+idx_and_log_count_sorted: list[tuple[int, float]] = preprocessing_utils.create_sorted_idx_to_log_count_vocab(
     word_to_idx_count_vocab=vocab.word_to_idx_count_vocab
 )
 
-print(vocab_frequencies[1209])
+print("...idx-and-log-count-sorted created")
 
-print("subsample")
 
-subsampled_training_data: list[tuple[int, list[int]]] = training_utils.subsample_training_data(
+print("subsample training-data...")
+
+subsampled_training_data: list[tuple[int, list[int]]] = preprocessing_utils.subsample_training_data(
     training_data=preprocessed_data.training_data,
-    vocab_frequencies=vocab_frequencies,
+    idx_to_vocab_freq=vocab.idx_to_vocab_freq,
     subsampling_t=subsampling_t,
     subsampling_pow=subsampling_pow
 )
+
+print("...subsampled training-data")
+
+
+print("create subsampled-word-to-idx-count-vocab...")
 
 subsampled_word_to_idx_count_vocab: dict[str, tuple[int, int]] = copy.deepcopy(
     vocab.word_to_idx_count_vocab
 )
 
-subsampled_idx_to_word_vocab = preprocessing_utils.create_idx_to_word_vocab(
+subsampled_idx_to_word_vocab: dict[int, str] = preprocessing_utils.create_idx_to_word_vocab(
     word_to_idx_count_vocab=subsampled_word_to_idx_count_vocab
 )
 
-print("count")
-
-subsampled_word_to_idx_count_vocab: dict[str, tuple[int, int]] = preprocessing_utils.add_window_count_to_vocab(
+subsampled_word_to_idx_count_vocab: dict[str, tuple[int, int]] = preprocessing_utils.add_window_count_to_word_to_idx_count_vocab(
     word_to_idx_count_vocab=subsampled_word_to_idx_count_vocab,
     idx_to_word_vocab=subsampled_idx_to_word_vocab,
     training_data=subsampled_training_data
 )
 
+print("...subsampled-word-to-idx-count-vocab created")
+
+
 print("len(subsampled_training_data)")
 print(len(subsampled_training_data))
 
-subsampled_idx_to_count_vocab: dict[int, int] = {
+
+print("create subsampled-idx-and-log-count-sorted...")
+
+subsampled_idx_and_log_count_sorted: list[tuple[int, float]] = preprocessing_utils.create_sorted_idx_to_log_count_vocab(
+    word_to_idx_count_vocab=subsampled_word_to_idx_count_vocab
+)
+
+print("...subsampled-idx-and-log-count-sorted created")
+
+
+""" subsampled_idx_to_count_vocab: dict[int, int] = {
     subsampled_idx_count[0]: subsampled_idx_count[1] for subsampled_idx_count in subsampled_word_to_idx_count_vocab.values()
 }
 
 sorted_subsampled_values: list[tuple[int, int]] = [
-    (a[0], subsampled_idx_to_count_vocab[a[0]]) for a in sorted_values
+    (a[0], subsampled_idx_to_count_vocab[a[0]]) for a in idx_count_sorted
 ]
 
 sorted(subsampled_word_to_idx_count_vocab.values(),
@@ -80,8 +93,14 @@ sorted(subsampled_word_to_idx_count_vocab.values(),
 
 
 count_subsampled = [(math.log(v[1]) if v[1] > 0 else 0)
-                    for v in sorted_subsampled_values]
+                    for v in sorted_subsampled_values] """
 
-plt.plot(range(0, len(sorted_values)), count)
-plt.plot(range(0, len(sorted_subsampled_values)), count_subsampled)
-plt.show()
+plt.plot(  # type: ignore
+    range(0, len(idx_and_log_count_sorted)),
+    list(map(lambda x: x[1], idx_and_log_count_sorted))
+)
+plt.plot(  # type: ignore
+    range(0, len(subsampled_idx_and_log_count_sorted)),
+    list(map(lambda x: x[1], subsampled_idx_and_log_count_sorted))
+)
+plt.show()  # type: ignore

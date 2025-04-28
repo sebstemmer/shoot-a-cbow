@@ -1,6 +1,6 @@
 from typing import Callable
 import random
-import v3.preprocessing.preprocessing_logic as preprocessing_logic
+import v3.preprocessing.preprocessing_utils as preprocessing_utils
 
 
 def subsample_training_data(
@@ -16,7 +16,7 @@ def subsample_training_data(
     subsampled_training_data: list[tuple[int, list[int]]] = []
 
     for training_sample in training_data:
-        target_idx = preprocessing_logic.subsample_idx(
+        target_idx = preprocessing_utils.subsample_idx(
             idx=training_sample[0],
             subsampling_t=subsampling_t,
             subsampling_pow=subsampling_pow,
@@ -27,7 +27,7 @@ def subsample_training_data(
         if target_idx != -1:
             filtered_context = list(
                 filter(
-                    lambda context_idx: preprocessing_logic.subsample_idx(
+                    lambda context_idx: preprocessing_utils.subsample_idx(
                         idx=context_idx,
                         subsampling_t=subsampling_t,
                         subsampling_pow=subsampling_pow,

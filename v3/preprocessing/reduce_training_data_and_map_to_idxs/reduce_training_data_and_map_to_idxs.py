@@ -1,4 +1,4 @@
-import v3.preprocessing.preprocessing_logic as preprocessing_logic
+import v3.preprocessing.preprocessing_utils as preprocessing_utils
 
 
 def reduce_training_data_and_map_to_idxs(
@@ -9,7 +9,7 @@ def reduce_training_data_and_map_to_idxs(
         (word_to_idx_count_vocab[sample[0]][0], reduced_context_window) for sample in full_training_data_in_words if (
             sample[0] in word_to_idx_count_vocab
         ) and (
-            reduced_context_window := preprocessing_logic.reduce_context_window_and_map_to_idx(
+            reduced_context_window := preprocessing_utils.reduce_context_window_and_map_to_idx(
                 context_window=sample[1],
                 word_to_idx_count_vocab=word_to_idx_count_vocab
             )
