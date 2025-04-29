@@ -12,8 +12,6 @@ print("read raw text...")
 raw_text: str = open(preprocessing_utils.path_to_data_folder +
                      "raw/AllCombined.txt", "r").read()
 
-raw_text = raw_text[0:5000]
-
 print("...raw text read")
 
 

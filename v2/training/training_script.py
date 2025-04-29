@@ -3,7 +3,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 import pickle
 from v2.training.data_set import Dataset
-from v2.training.model import CBOWNeuralNetwork
+from v3.training.model.model import CBOWNeuralNetwork
 import sys
 import v2.training.training_utils as training_utils
 import collections

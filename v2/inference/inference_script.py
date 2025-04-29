@@ -1,7 +1,7 @@
 
 import torch
 import pickle
-from v2.training.model import CBOWNeuralNetwork
+from v3.training.model.model import CBOWNeuralNetwork
 import v2.inference.inference_utils as inference_utils
 from typing import Union, Any
 
