@@ -1,23 +1,29 @@
 import torch
-from torch import nn
-from torch.utils.data import DataLoader
 import pickle
-import matplotlib.pyplot as plt
 import v3.preprocessing.preprocessing_utils as preprocessing_utils
 import v3.training.training_utils as training_utils
 
+
+preprocessing_run_label = "vs_30_cw_4"
+training_run_label = "vs_30_cw_4_noss"
+load_from_epoch = 16
+
 batch_size = 2048
 hidden_layer_size = 300
+
 num_epochs = 1000
 learning_rate = 5
-load_from_epoch = -1
+
+activate_subsampling = False
 subsampling_t = 1e-3
 subsampling_pow = 1
 
 
 print("load preprocessed-data...")
 
-with open(preprocessing_utils.path_to_data_folder + "preprocessing/preprocessed_data.pickle", "rb") as handle:
+with open(preprocessing_utils.path_to_preprocessed_data(
+    preprocessing_run_label=preprocessing_run_label
+), "rb") as handle:
     preprocessed_data: preprocessing_utils.PreprocessedData = pickle.load(
         handle
     )
@@ -27,10 +33,13 @@ print("...preprocessed-data loaded")
 
 print("load vocab...")
 
-with open(preprocessing_utils.path_to_data_folder + "preprocessing/vocab.pickle", "rb") as handle:
-    vocab: preprocessing_utils.Vocab = pickle.load(handle)
+vocab: preprocessing_utils.Vocab = training_utils.load_vocab(
+    preprocessing_run_label=preprocessing_run_label
+)
 
 print("...vocab loaded")
+
+print("there are " + str(len(preprocessed_data.training_data) / batch_size) + " batches")
 
 
 device = torch.accelerator.current_accelerator(
@@ -50,84 +59,110 @@ optimizer: torch.optim.SGD = torch.optim.SGD(
     lr=learning_rate
 )
 
-cross_entropy_loss_function: nn.CrossEntropyLoss = nn.CrossEntropyLoss()
+cross_entropy_loss_function: torch.nn.CrossEntropyLoss = torch.nn.CrossEntropyLoss()
 
 print("...inited model, optimizer and loss-function")
 
 
 if (load_from_epoch >= 0):
-    checkpoint = torch.load(  # type: ignore
-        "./v2/data/model/model_epoch_" + str(load_from_epoch) + ".pt")
+    print("load model " + str(training_run_label) +
+          " from epoch " + str(load_from_epoch) + "...")
 
-    model.load_state_dict(checkpoint['model_state_dict'])
+    model_data_at_epoch: training_utils.ModelData = training_utils.load_model_data_at_epoch(
+        training_run_label=training_run_label,
+        epoch=load_from_epoch
+    )
+
+    hidden_layer_size = model_data_at_epoch.hidden_layer_size
+
+    model.load_state_dict(model_data_at_epoch.model_state_dict)
+
+    print("...loaded model")
+
 
 model.train()
 
+
 for epoch in range(load_from_epoch + 1, num_epochs):
-    print("epoch: " + str(epoch) + "\n")
+    print("\n\nepoch: " + str(epoch))
 
-    # subsampled_training_data = training_utils.subsample_training_data(
-    #    training_data=training_data,
-    #    vocab_frequencies=vocab_frequencies,
-    #    subsampling_t=subsampling_t
-    # )
+    subsampled_training_data: list[tuple[int, list[int]]]
 
-    dataset = Dataset(
-        training_data=training_data,
-        context_window_size=context_window_size,
-        vocab_size=vocab_size
+    if activate_subsampling:
+        subsampled_training_data = preprocessing_utils.subsample_training_data(
+            training_data=preprocessed_data.training_data,
+            idx_to_vocab_freq=vocab.idx_to_vocab_freq,
+            subsampling_t=subsampling_t,
+            subsampling_pow=subsampling_pow
+        )
+
+        print("there are " +
+              str(len(subsampled_training_data) / batch_size) + " batches after subsampling")
+    else:
+        subsampled_training_data = preprocessed_data.training_data
+
+    dataset: training_utils.Dataset = training_utils.Dataset(
+        training_data=subsampled_training_data,
+        context_window_size=preprocessed_data.context_window_size,
+        vocab_size=vocab.vocab_size
     )
 
-    dataLoader = DataLoader(  # type: ignore
+    dataLoader: torch.utils.data.DataLoader[
+        tuple[torch.Tensor, torch.Tensor, torch.Tensor]
+    ] = torch.utils.data.DataLoader(
         dataset=dataset,
         batch_size=batch_size,
         shuffle=True
     )
 
-    # print("in this epoch are " +
-    #     str(len(subsampled_training_data) / batch_size) + " batches")
-
-    print("in this epoch are " + str(len(training_data) / batch_size) + " batches")
-
     epoch_loss = 0.0
     counter = 0.0
 
-    for (idx, batch) in enumerate(dataLoader):  # type: ignore
+    for (idx, batch) in enumerate(dataLoader):
+        print(idx)
         optimizer.zero_grad()
 
         x, normed_mask, y = batch
-        # print(idx)
 
-        outputs = model(x.to(device), normed_mask.to(device))
+        outputs = model(
+            x=x.to(device),
+            mask=normed_mask.to(device)
+        )
 
         loss = cross_entropy_loss_function(outputs, y.to(device))
         epoch_loss += loss.item()
         counter += 1.0
 
-        # print("loss: " + str(loss.item()))  # +
-        # ", epoch loss: " + str(epoch_loss / counter))
-
         loss.backward()
 
         optimizer.step()  # type: ignore
 
-        """ for name, param in model.named_parameters():
-            print(name, param.grad.abs().mean())
+    epoch_loss = epoch_loss / counter
 
-        print(
-            "Top-5 softmax probs:",
-            torch.softmax(outputs[0], dim=-1).topk(5).values
-        ) """
+    print("epoch loss is " + str(epoch_loss))
 
-    print("epoch_loss")
-    print(epoch_loss / counter)
+    print("save model...")
 
-    checkpoint_path = f"./v2/data/model/model_epoch_{epoch}.pt"
-    torch.save({  # type: ignore
-        "epoch": epoch,
-        "hidden_layer_size": hidden_layer_size,
-        "model_state_dict": model.state_dict(),
-    },
-        checkpoint_path
+    path_to_model_at_epoch: str = training_utils.create_path_to_model_at_epoch(
+        epoch=epoch,
+        training_run_label=training_run_label
     )
-    print(f"Checkpoint saved: {checkpoint_path}")
+    torch.save(  # type: ignore
+        training_utils.ModelData(
+            epoch=epoch,
+            hidden_layer_size=hidden_layer_size,
+            model_state_dict=model.state_dict()
+        ),
+        path_to_model_at_epoch
+    )
+    print("...model saved")
+
+    print("save epoch-loss...")
+
+    training_utils.save_epoch_loss(
+        training_run_label=training_run_label,
+        epoch=epoch,
+        epoch_loss=epoch_loss
+    )
+
+    print("...epoch-loss saved")

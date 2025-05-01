@@ -18,9 +18,25 @@ from .subsample_training_data.subsample_training_data import *
 from .create_idx_to_vocab_freq.create_idx_to_vocab_freq import *
 from .flatten.flatten import *
 from .create_sorted_idx_to_log_count_vocab.create_sorted_idx_to_log_count_vocab import *
+import os
 
 
 path_to_data_folder: str = "./v3/data/"
+path_to_preprocessing_folder: str = path_to_data_folder + "preprocessing/"
+
+
+def path_to_preprocessing_run_folder(preprocessing_run_label: str) -> str:
+    path = path_to_preprocessing_folder + str(preprocessing_run_label)
+    os.makedirs(path, exist_ok=True)
+    return path + "/"
+
+
+def path_to_vocab(preprocessing_run_label: str) -> str:
+    return path_to_preprocessing_run_folder(preprocessing_run_label=preprocessing_run_label) + "vocab.pickle"
+
+
+def path_to_preprocessed_data(preprocessing_run_label: str) -> str:
+    return path_to_preprocessing_run_folder(preprocessing_run_label=preprocessing_run_label) + "preprocessed_data.pickle"
 
 
 class PreprocessedData:

@@ -1,30 +1,14 @@
-import torch
+from .cosine_similarity_in_last_dim.cosine_similarity_in_last_dim import *
 
 
-def cosine_similarity_in_last_dim(
-    vec: torch.Tensor,
+def calc_embedding_a_minus_b_plus_c(
+    word_a: str,
+    word_b: str,
+    word_c: str,
     embeddings: torch.Tensor,
-    excludes: list[int]
-) -> torch.Tensor:
-    result: torch.Tensor = torch.nn.functional.cosine_similarity(
-        vec,
-        embeddings,
-        dim=-1
-    )
-
-    result[excludes] = 0.0
-
-    return result
-
-
-def check_relation(
-        word_a: str,
-        word_b: str,
-        word_c: str,
-        embeddings: torch.Tensor,
-        word_to_idx_vocab: dict[str, int],
-        idx_to_word_vocab: dict[int, str],
-        top: int
+    word_to_idx_vocab: dict[str, int],
+    idx_to_word_vocab: dict[int, str],
+    top: int
 ) -> list[str]:
     word_a_idx: int = word_to_idx_vocab[word_a]
     word_a_embed: torch.Tensor = embeddings[word_a_idx, :]
@@ -42,8 +26,6 @@ def check_relation(
         embeddings=embeddings,
         excludes=[word_a_idx, word_b_idx, word_c_idx]
     )
-
-    print(sim.shape)
 
     _, top_idxs_tensor = torch.topk(input=sim, k=top)
 

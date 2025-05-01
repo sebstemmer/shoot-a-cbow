@@ -1,0 +1,4 @@
+from .cosine_similarity_in_last_dim import cosine_similarity_in_last_dim_test
+
+
+cosine_similarity_in_last_dim_test.runTest()

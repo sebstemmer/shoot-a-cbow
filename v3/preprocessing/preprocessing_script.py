@@ -4,7 +4,8 @@ import v3.preprocessing.preprocessing_utils as preprocessing_utils
 
 
 vocab_size: int = 30000
-context_window_size: int = 4
+context_window_size: int = 6
+preprocessing_run_label: str = "vs_30_cw_6"
 
 
 print("read raw text...")
@@ -146,7 +147,9 @@ preprocessed_data: preprocessing_utils.PreprocessedData = preprocessing_utils.Pr
     training_data=training_data
 )
 
-with open(preprocessing_utils.path_to_data_folder + "preprocessing/preprocessed_data.pickle", "wb") as handle:
+with open(preprocessing_utils.path_to_preprocessed_data(
+    preprocessing_run_label=preprocessing_run_label
+), "wb") as handle:
     pickle.dump(
         preprocessed_data, handle, protocol=pickle.HIGHEST_PROTOCOL
     )
@@ -164,7 +167,9 @@ vocab: preprocessing_utils.Vocab = preprocessing_utils.Vocab(
     idx_to_vocab_freq=idx_to_vocab_freq
 )
 
-with open(preprocessing_utils.path_to_data_folder + "/preprocessing/vocab.pickle", "wb") as handle:
+with open(preprocessing_utils.path_to_vocab(
+    preprocessing_run_label=preprocessing_run_label
+), "wb") as handle:
     pickle.dump(
         vocab, handle, protocol=pickle.HIGHEST_PROTOCOL
     )
