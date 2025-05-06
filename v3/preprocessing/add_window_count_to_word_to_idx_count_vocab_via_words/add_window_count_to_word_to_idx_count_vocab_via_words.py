@@ -9,6 +9,7 @@ def add_window_count_to_word_to_idx_count_vocab_via_words(
     for window in windows:
         for word in window:
             word_to_idx_count_vocab[word] = (
-                word_to_idx_count_vocab[word][0], word_to_idx_count_vocab[word][1] + 1)
+                word_to_idx_count_vocab[word][0], word_to_idx_count_vocab[word][1] + 1
+            )
 
     return word_to_idx_count_vocab

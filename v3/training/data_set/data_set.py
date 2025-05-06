@@ -27,7 +27,9 @@ class Dataset(torch.utils.data.Dataset[
         X[0:len(training_sample[1])] = torch.tensor(training_sample[1])
 
         CS: torch.Tensor = torch.tensor(
-            len(training_sample[1]), dtype=torch.short)
+            len(training_sample[1]),
+            dtype=torch.short
+        )
 
         mask: torch.Tensor = (
             torch.arange(0, self.context_window_size * 2) < CS

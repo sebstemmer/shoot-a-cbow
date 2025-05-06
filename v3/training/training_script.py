@@ -4,9 +4,9 @@ import v3.preprocessing.preprocessing_utils as preprocessing_utils
 import v3.training.training_utils as training_utils
 
 
-preprocessing_run_label = "vs_30_cw_4"
-training_run_label = "vs_30_cw_4_noss"
-load_from_epoch = 16
+preprocessing_run_label = "vs_30_cw_6"
+training_run_label = "vs_30_cw_6_noss"
+load_from_epoch = -1
 
 batch_size = 2048
 hidden_layer_size = 300
@@ -17,6 +17,9 @@ learning_rate = 5
 activate_subsampling = False
 subsampling_t = 1e-3
 subsampling_pow = 1
+
+
+print("start training-run with label " + training_run_label + "...")
 
 
 print("load preprocessed-data...")
@@ -39,12 +42,13 @@ vocab: preprocessing_utils.Vocab = training_utils.load_vocab(
 
 print("...vocab loaded")
 
+
 print("there are " + str(len(preprocessed_data.training_data) / batch_size) + " batches")
 
 
 device = torch.accelerator.current_accelerator(
 ).type if torch.accelerator.is_available() else "cpu"
-print(f"using {device} device")
+print("using device: " + device)
 
 
 print("init model, optimizer and loss-function...")
@@ -59,7 +63,9 @@ optimizer: torch.optim.SGD = torch.optim.SGD(
     lr=learning_rate
 )
 
-cross_entropy_loss_function: torch.nn.CrossEntropyLoss = torch.nn.CrossEntropyLoss()
+cross_entropy_loss_function: torch.nn.CrossEntropyLoss = torch.nn.CrossEntropyLoss(
+    ignore_index=vocab.vocab_size
+)
 
 print("...inited model, optimizer and loss-function")
 
@@ -129,7 +135,11 @@ for epoch in range(load_from_epoch + 1, num_epochs):
             mask=normed_mask.to(device)
         )
 
-        loss = cross_entropy_loss_function(outputs, y.to(device))
+        loss = cross_entropy_loss_function(
+            input=outputs,
+            target=y.to(device)
+        )
+
         epoch_loss += loss.item()
         counter += 1.0
 
@@ -143,7 +153,7 @@ for epoch in range(load_from_epoch + 1, num_epochs):
 
     print("save model...")
 
-    path_to_model_at_epoch: str = training_utils.create_path_to_model_at_epoch(
+    path_to_model_at_epoch: str = training_utils.path_to_model_at_epoch(
         epoch=epoch,
         training_run_label=training_run_label
     )

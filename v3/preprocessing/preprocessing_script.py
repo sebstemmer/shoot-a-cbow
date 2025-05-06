@@ -8,6 +8,8 @@ context_window_size: int = 6
 preprocessing_run_label: str = "vs_30_cw_6"
 
 
+print("start preprocessing-run with label " + preprocessing_run_label + "...")
+
 print("read raw text...")
 
 raw_text: str = open(preprocessing_utils.path_to_data_folder +

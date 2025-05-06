@@ -4,15 +4,18 @@ import v3.training.training_utils as training_utils
 import v3.inference.inference_utils as inference_utils
 
 
-training_run_label: str = "nosubsampling"
-epoch: int = 144
+preprocessing_run_label: str = "vs_30_cw_6"
+training_run_label: str = "vs_30_cw_6_noss"
+epoch: int = 50
 device: str = "cpu"
 top: int = 3
 
 
 print("load vocab-data...")
 
-vocab_data = training_utils.load_vocab()
+vocab_data = training_utils.load_vocab(
+    preprocessing_run_label=preprocessing_run_label
+)
 
 print("...loaded vocab-data")
 
@@ -107,12 +110,12 @@ print(
     )
 )
 
-print("input: fast - cold + hot, expected: slow")
+print("input: small - hot + cold, expected: large")
 print(
     inference_utils. calc_embedding_a_minus_b_plus_c(
-        word_a="fast",
-        word_b="cold",
-        word_c="hot",
+        word_a="small",
+        word_b="hot",
+        word_c="cold",
         embeddings=embeddings,
         word_to_idx_vocab=vocab_data.word_to_idx_vocab,
         idx_to_word_vocab=vocab_data.idx_to_word_vocab,

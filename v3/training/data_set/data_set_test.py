@@ -7,8 +7,8 @@ def runTest():
         (0, [1, 2, 3]), (2, [0, 4, 5]), (4, [1, 2])
     ]
     idx: int = 1
-    vocab_size: int = 6
     context_window_size: int = 2
+    vocab_size: int = 6
 
     dataset: Dataset = Dataset(
         training_data=training_data,
