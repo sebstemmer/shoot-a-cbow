@@ -1,6 +1,6 @@
 # Implementation of CBOW (Word2vec) using PyTorch
 
-This repository contains an implementation of the **Continuous Bag of Words (CBOW)** model based on the paper:
+This repository contains an implementation of the **Continuous Bag of Words (CBOW)** model based on the paper
 
 [Efficient Estimation of Word Representations in Vector Space - Tomas Mikolov, Kai Chen, Greg Corrado, Jeffrey Dean](https://arxiv.org/abs/1301.3781)
 
@@ -12,12 +12,13 @@ Many utility functions, the model, and the PyTorch `Dataset` are covered by **un
 
 **Subsampling** is also supported.
 
-**Note:** All scripts should be executed using:
+**Note:** All scripts should be executed using
 
 ```
 python -m ...
 ```
-from the **root** of the directory.
+
+from the **root** of the repository.
 
 ## Structure
 
@@ -34,7 +35,7 @@ from the **root** of the directory.
 
 ## Installation
 
-After cloning the repository, navigate to the root directory and create a virtual environment:
+After cloning the repository, create a virtual environment:
 
 ```
 python -m venv venv
@@ -107,7 +108,7 @@ subsampling_pow: float = 1.0
 
 * `preprocessing_run_label`: refers to the label previously set in the `preprocessing_script.py`. 
 * `training_run_label`: refers to the label for this training run.
-* `load_from_epoch`: If set to -1, training starts from scratch. Otherwise, it resumes from the given epoch. This is possible because model weights are persisted after each epoch.
+* `load_from_epoch`: If set to `-1`, training starts from scratch. Otherwise, it resumes from the given epoch. This is possible because model weights are persisted after each epoch.
 * `batch_size`, `hidden_layer_size`, `num_epochs`, and `learning_rate` are self-explanatory. 
 
 If `activate_subsampling` is `True` subsampling is applied using the formula:
@@ -143,7 +144,7 @@ python -m training.plot_epoch_losses_script
 
 Specify `training_run_label` and `toIdx` (plot up to this epoch index) inside the script.
 
-To help choose suitable subsampling parameters, run:
+To help choose suitable subsampling parameters, run
 
 ```
 python -m training.analyze_subsampling_params_script
@@ -159,7 +160,7 @@ You can set the following parameters at the top of the script:
 
 ```
 preprocessing_run_label: str = "vs_30_cw_4"
-training_run_label: str = "vs_30_cw_4_hl_300_noss"
+training_run_label: str = "vs_30_cw_4_noss"
 epoch: int = 19
 top: int = 5
 ```
