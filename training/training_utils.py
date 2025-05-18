@@ -14,6 +14,16 @@ def load_vocab(preprocessing_run_label: str) -> preprocessing_utils.Vocab:
         return vocab
 
 
+def load_preprocessed_data(preprocessing_run_label: str) -> preprocessing_utils.PreprocessedData:
+    with open(preprocessing_utils.path_to_preprocessed_data(
+        preprocessing_run_label=preprocessing_run_label
+    ), "rb") as handle:
+        preprocessed_data: preprocessing_utils.PreprocessedData = pickle.load(
+            handle
+        )
+        return preprocessed_data
+
+
 path_to_training_folder: str = preprocessing_utils.path_to_data_folder + "training/"
 
 

@@ -1,30 +1,33 @@
 import preprocessing.preprocessing_utils as preprocessing_utils
+import training.training_utils as training_utils
 import matplotlib.pyplot as plt
-import pickle
 import copy
+
+preprocessing_run_label: str = "vs_30_cw_4"
+training_run_label: str = "vs_30_cw_4_noss"
+
+print("load vocab-data...")
+
+vocab_data = training_utils.load_vocab(
+    preprocessing_run_label=preprocessing_run_label
+)
+
+print("...loaded vocab-data")
+
 
 print("load preprocessed-data...")
 
-with open(preprocessing_utils.path_to_data_folder + "preprocessing/preprocessed_data.pickle", "rb") as handle:
-    preprocessed_data: preprocessing_utils.PreprocessedData = pickle.load(
-        handle
-    )
+preprocessed_data: preprocessing_utils.PreprocessedData = training_utils.load_preprocessed_data(
+    preprocessing_run_label=preprocessing_run_label
+)
 
 print("...preprocessed-data loaded")
-
-
-print("load vocab...")
-
-with open(preprocessing_utils.path_to_data_folder + "preprocessing/vocab.pickle", "rb") as handle:
-    vocab: preprocessing_utils.Vocab = pickle.load(handle)
-
-print("...vocab loaded")
 
 
 print("create idx-and-log-count-sorted...")
 
 idx_and_log_count_sorted: list[tuple[int, float]] = preprocessing_utils.create_sorted_idx_to_log_count_vocab(
-    word_to_idx_count_vocab=vocab.word_to_idx_count_vocab
+    word_to_idx_count_vocab=vocab_data.word_to_idx_count_vocab
 )
 
 print("...idx-and-log-count-sorted created")
@@ -47,7 +50,7 @@ def create_plot_for_subsample_params(
 
     subsampled_training_data: list[tuple[int, list[int]]] = preprocessing_utils.subsample_training_data(
         training_data=preprocessed_data.training_data,
-        idx_to_vocab_freq=vocab.idx_to_vocab_freq,
+        idx_to_vocab_freq=vocab_data.idx_to_vocab_freq,
         subsampling_t=subsampling_t,
         subsampling_pow=subsampling_pow
     )
@@ -60,7 +63,7 @@ def create_plot_for_subsample_params(
     print("create subsampled-word-to-idx-count-vocab...")
 
     subsampled_word_to_idx_count_vocab: dict[str, tuple[int, int]] = copy.deepcopy(
-        vocab.word_to_idx_count_vocab
+        vocab_data.word_to_idx_count_vocab
     )
 
     subsampled_idx_to_word_vocab: dict[int, str] = preprocessing_utils.create_idx_to_word_vocab(

@@ -5,7 +5,7 @@ import training.training_utils as training_utils
 
 
 preprocessing_run_label: str = "vs_30_cw_4"
-training_run_label: str = "vs_30_cw_4_noss_v2"
+training_run_label: str = "vs_30_cw_4_noss"
 load_from_epoch: int = -1
 
 batch_size: int = 2048
@@ -24,13 +24,9 @@ print("start training-run with label " + training_run_label + "...")
 
 print("load preprocessed-data...")
 
-with open(preprocessing_utils.path_to_preprocessed_data(
+preprocessed_data: preprocessing_utils.PreprocessedData = training_utils.load_preprocessed_data(
     preprocessing_run_label=preprocessing_run_label
-), "rb") as handle:
-    preprocessed_data: preprocessing_utils.PreprocessedData = pickle.load(
-        handle
-    )
-print(len(preprocessed_data.training_data))
+)
 
 print("...preprocessed-data loaded")
 

@@ -8,7 +8,7 @@ A detailed explanation and additional context can be found in a [post on my pers
 
 All scripts log valuable information about what is happening at runtime.
 
-Many utility functions, the model, and the PyTorch `Dataset` are covered by **unit tests**.
+Many utility functions, the model, and the PyTorch `Dataset` are covered by **unit tests**. **Type annotations** are used throughout the repository.
 
 **Subsampling** is also supported.
 
@@ -145,7 +145,9 @@ Specify `training_run_label` and `toIdx` (plot up to this epoch index) inside th
 
 To help choose suitable subsampling parameters, run:
 
-`python -m training.analyze_subsampling_params_script`
+```
+python -m training.analyze_subsampling_params_script
+```
 
 This plots word occurrence log-frequency sorted by index.
 
@@ -209,5 +211,3 @@ Run the inference unit tests with:
 ```
 python -m inference.run_tests_script
 ```
-
-execute all again to see if it works
