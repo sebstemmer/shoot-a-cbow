@@ -4,8 +4,8 @@ import preprocessing.preprocessing_utils as preprocessing_utils
 
 
 vocab_size: int = 30000
-context_window_size: int = 6
-preprocessing_run_label: str = "vs_30_cw_6"
+context_window_size: int = 4
+preprocessing_run_label: str = "vs_30_cw_4"
 
 
 print("start preprocessing-run with label " + preprocessing_run_label + "...")

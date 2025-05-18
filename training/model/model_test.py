@@ -13,7 +13,7 @@ def runTest():
         ]
     )
 
-    mask: torch.Tensor = torch.tensor(
+    normed_mask: torch.Tensor = torch.tensor(
         [
             [[0.5, 0.5, 0.0]],
             [[1.0/3.0, 1.0/3.0, 1.0/3.0]]
@@ -44,7 +44,7 @@ def runTest():
 
     output = model.forward(
         x=x,
-        mask=mask
+        normed_mask=normed_mask
     )
 
     assert torch.allclose(

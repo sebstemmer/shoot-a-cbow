@@ -1,26 +1,26 @@
 import training.training_utils as training_utils
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 
-training_run_label_0: str = "vs_30_cw_4_noss"
+training_run_label: str = "vs_30_cw_4_noss"
+toIdx = 70
 
-epoch_losses_0: dict[int, float] = training_utils.load_epoch_losses(
-    training_run_label_0
+epoch_losses: dict[int, float] = training_utils.load_epoch_losses(
+    training_run_label
 )
 
-training_run_label_1: str = "vs_30_cw_6_noss"
+keys: list[int] = list(epoch_losses.keys())
+values: list[float] = list(epoch_losses.values())
+fig, ax = plt.subplots()  # type: ignore
 
-epoch_losses_1: dict[int, float] = training_utils.load_epoch_losses(
-    training_run_label_1
+ax.plot(  # type: ignore
+    list(keys[:toIdx]),
+    list(values[:toIdx])
 )
 
-plt.plot(  # type: ignore
-    list(epoch_losses_0.keys()),
-    list(epoch_losses_0.values())
-)
-plt.plot(  # type: ignore
-    list(epoch_losses_1.keys()),
-    list(epoch_losses_1.values())
-)
-plt.xlabel(xlabel="epoch")  # type: ignore
-plt.ylabel(ylabel="loss")  # type: ignore
+ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+
+ax.set_xlabel("epoch")  # type: ignore
+ax.set_ylabel("loss")  # type: ignore
+ax.set_title("Average Loss per Epoch")  # type: ignore
 plt.show()  # type: ignore

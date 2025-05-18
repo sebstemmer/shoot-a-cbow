@@ -3,9 +3,6 @@ import matplotlib.pyplot as plt
 import pickle
 import copy
 
-# 1e-3 1
-# 1e-4 1
-
 print("load preprocessed-data...")
 
 with open(preprocessing_utils.path_to_data_folder + "preprocessing/preprocessed_data.pickle", "rb") as handle:

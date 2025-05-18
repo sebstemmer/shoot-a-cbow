@@ -24,10 +24,10 @@ class CBOWNeuralNetwork(torch.nn.Module):
     def forward(
         self: 'CBOWNeuralNetwork',
         x: torch.Tensor,
-        mask: torch.Tensor
+        normed_mask: torch.Tensor
     ) -> torch.Tensor:
-        hidden = self.input_to_hidden(x)
+        hidden: torch.Tensor = self.input_to_hidden(x)
 
-        masked_hidden = torch.matmul(mask, hidden)
+        averaged_hidden: torch.Tensor = torch.matmul(normed_mask, hidden)
 
-        return self.hidden_to_output(masked_hidden.squeeze(1))
+        return self.hidden_to_output(averaged_hidden.squeeze(1))

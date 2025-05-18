@@ -4,19 +4,19 @@ import preprocessing.preprocessing_utils as preprocessing_utils
 import training.training_utils as training_utils
 
 
-preprocessing_run_label = "vs_30_cw_6"
-training_run_label = "vs_30_cw_6_noss"
-load_from_epoch = -1
+preprocessing_run_label: str = "vs_30_cw_4"
+training_run_label: str = "vs_30_cw_4_noss_v2"
+load_from_epoch: int = -1
 
-batch_size = 2048
-hidden_layer_size = 300
+batch_size: int = 2048
+hidden_layer_size: int = 300
 
-num_epochs = 1000
-learning_rate = 5
+num_epochs: int = 1000
+learning_rate: int = 5
 
-activate_subsampling = False
-subsampling_t = 1e-3
-subsampling_pow = 1
+activate_subsampling: bool = False
+subsampling_t: float = 1e-4
+subsampling_pow: float = 1.0
 
 
 print("start training-run with label " + training_run_label + "...")
@@ -30,6 +30,7 @@ with open(preprocessing_utils.path_to_preprocessed_data(
     preprocessed_data: preprocessing_utils.PreprocessedData = pickle.load(
         handle
     )
+print(len(preprocessed_data.training_data))
 
 print("...preprocessed-data loaded")
 
@@ -63,9 +64,7 @@ optimizer: torch.optim.SGD = torch.optim.SGD(
     lr=learning_rate
 )
 
-cross_entropy_loss_function: torch.nn.CrossEntropyLoss = torch.nn.CrossEntropyLoss(
-    ignore_index=vocab.vocab_size
-)
+cross_entropy_loss_function: torch.nn.CrossEntropyLoss = torch.nn.CrossEntropyLoss()
 
 print("...inited model, optimizer and loss-function")
 
@@ -132,7 +131,7 @@ for epoch in range(load_from_epoch + 1, num_epochs):
 
         outputs = model(
             x=x.to(device),
-            mask=normed_mask.to(device)
+            normed_mask=normed_mask.to(device)
         )
 
         loss = cross_entropy_loss_function(

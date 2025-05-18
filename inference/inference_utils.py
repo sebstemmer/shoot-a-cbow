@@ -32,3 +32,26 @@ def calc_embedding_a_minus_b_plus_c(
     top_idxs: list[int] = top_idxs_tensor.tolist()  # type: ignore
 
     return [idx_to_word_vocab[idx] for idx in top_idxs]
+
+
+def get_similar_words(
+    word: str,
+    embeddings: torch.Tensor,
+    word_to_idx_vocab: dict[str, int],
+    idx_to_word_vocab: dict[int, str],
+    top: int
+) -> list[str]:
+    word_idx: int = word_to_idx_vocab[word]
+    word_embed: torch.Tensor = embeddings[word_idx, :]
+
+    sim: torch.Tensor = cosine_similarity_in_last_dim(
+        vec=word_embed,
+        embeddings=embeddings,
+        excludes=[word_idx]
+    )
+
+    _, top_idxs_tensor = torch.topk(input=sim, k=top)
+
+    top_idxs: list[int] = top_idxs_tensor.tolist()  # type: ignore
+
+    return [idx_to_word_vocab[idx] for idx in top_idxs]
