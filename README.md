@@ -4,7 +4,7 @@ This repository contains an implementation of the **Continuous Bag of Words (CBO
 
 [Efficient Estimation of Word Representations in Vector Space - Tomas Mikolov, Kai Chen, Greg Corrado, Jeffrey Dean](https://arxiv.org/abs/1301.3781)
 
-A detailed explanation and additional context can be found in a [post on my personal blog](http://localhost:4000/data/science/implementation/2025/05/16/implementation-of-cbow-word2vec-using-pytorch.html).
+A detailed explanation and additional context can be found in a [post on my personal blog](https://sebstemmer.com/data/science/implementation/2025/05/19/implementation-of-cbow-word2vec-using-pytorch.html).
 
 All scripts log valuable information about what is happening at runtime.
 
@@ -207,7 +207,7 @@ here
 queen ≈ king - man + woman
 ```
 
-Run the inference unit tests with:
+Run the inference unit tests with
 
 ```
 python -m inference.run_tests_script
